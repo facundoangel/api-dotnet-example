@@ -1,9 +1,12 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.FeatureManagement;
 using Persistencia.Data;
-using test.swagger;
-using test.middleware;
+using Servicios;
+using Servicios.interfaces;
+using System.Reflection;
 using test;
+using test.middleware;
+using test.swagger;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,6 +29,22 @@ builder.Services.AddSwaggerGen(options =>
     options.DocumentFilter<FeatureGateFilter>();
 });
 
+var servicesAssembly = Assembly.Load("Servicios");
+
+var serviceInterfaces = servicesAssembly.GetTypes().Where(
+        x => x.IsInterface && x.Namespace?.Contains("Servicios.interfaces") == true
+    );
+
+var serviceImplementacion = servicesAssembly.GetTypes().Where(
+        x => x.IsClass && x.Name.EndsWith("Service") && x.Namespace?.Equals("Servicios") == true
+    );
+
+foreach (var interfaceService in serviceInterfaces){
+    var servicioImplementacion = serviceImplementacion.FirstOrDefault(t => interfaceService.IsAssignableFrom(t));
+
+    if(servicioImplementacion != null)
+        builder.Services.AddScoped(interfaceService, servicioImplementacion);
+}
 
 
 
@@ -39,6 +58,8 @@ builder.Services.AddDbContext<customDBContext>(options =>
         o.MigrationsHistoryTable("Migrations", "negocio");
     });
 });
+
+builder.Services.AddScoped<IPersonaService, PersonasService>();
 
 
 

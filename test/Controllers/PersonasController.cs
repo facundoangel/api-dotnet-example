@@ -7,6 +7,7 @@ using DTO.Persona;
 using Modelo;
 using Persistencia.Data;
 using Servicios;
+using Servicios.interfaces;
 
 
 
@@ -20,9 +21,9 @@ namespace test.Controllers
 
         private readonly BaseIntraLocalMatiContext _contextIntra;
         private readonly customDBContext _contextCustomDB;
-        private readonly PersonasService _personaService;
+        private readonly IPersonaService _personaService;
 
-        public PersonasController(BaseIntraLocalMatiContext contextIntra, customDBContext contextCustomDB, PersonasService personaService) {
+        public PersonasController(BaseIntraLocalMatiContext contextIntra, customDBContext contextCustomDB, IPersonaService personaService) {
             _contextIntra = contextIntra;
             _contextCustomDB = contextCustomDB;
             _personaService = personaService;
@@ -44,55 +45,6 @@ namespace test.Controllers
         {
 
 
-            /*var query = _contextIntra.Set<MdpPersona>()
-                .AsNoTracking();
-
-            var cantTotalRegistros = await query.CountAsync();
-            var cantTotalPaginas = Math.Floor(cantTotalRegistros / (double)limite_pagina);
-
-            if (nro_pagina < 0 || limite_pagina <= 0)
-                return BadRequest(new ErrorDTO
-                {
-                    StatusCode=400,
-                    Mensaje="Error en los parametros de la consulta ingresados",
-                    Detalle="Los parametros ingresados no pueden ser negativos"
-                });
-            if(nro_pagina > cantTotalPaginas)
-                return BadRequest(new ErrorDTO
-                {
-                    StatusCode = 400,
-                    Mensaje = "Error en los parametros de la consulta ingresados",
-                    Detalle = "El número de página no puede ser mayor a la cantidad total de paginas"
-                });
-
-
-            IEnumerable<PersonaDTO> responseQuery = await query
-                .OrderBy(p => p.Persona)
-                .Skip(nro_pagina * limite_pagina)
-                .Take(limite_pagina)
-                .Select(p => new PersonaDTO
-                {
-                    Persona = p.Persona,
-                    TipoDocumento = p.TipoDocumento,
-                    NroDocumento = p.NroDocumento,
-                    Apellido = p.Apellido,
-                    Nombres = p.Nombres,
-                    Sexo = p.Sexo,
-                    FechaNacimiento = p.FechaNacimiento,
-                })
-                .ToListAsync();
-
-
-            var response = new personaResultadoQueryDTO
-            {
-                alumnos = responseQuery,
-                pagina = nro_pagina,
-                cant_alumnos_pagina = limite_pagina,
-                total_paginas = cantTotalPaginas,
-                total_alumnos = cantTotalRegistros
-            };
-
-            */
 
             var response = await _personaService.getPersona(nro_pagina, limite_pagina);
 

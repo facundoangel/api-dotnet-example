@@ -2,10 +2,11 @@ using Microsoft.EntityFrameworkCore;
 using Persistencia.Data;
 using test;
 using DTO.Persona;
+using Servicios.interfaces;
 
 namespace Servicios
 {
-    public class PersonasService
+    public class PersonasService : IPersonaService
     {
 
 
