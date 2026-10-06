@@ -1,21 +1,36 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.FeatureManagement;
+using Microsoft.IdentityModel.Tokens;
 using Persistencia.Data;
 using Servicios;
 using Servicios.interfaces;
 using System.Reflection;
+using System.Text;
 using test;
+using test.auth;
 using test.middleware;
 using test.swagger;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+builder.Services.Configure<JWTConfiguracion>(builder.Configuration.GetSection("JWT"));
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddFeatureManagement();
+
+
+
+
+
+
+
+
+
 builder.Services.AddSwaggerGen(options =>
 {
     options.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
@@ -28,6 +43,67 @@ builder.Services.AddSwaggerGen(options =>
     options.EnableAnnotations();
     options.DocumentFilter<FeatureGateFilter>();
 });
+
+
+
+
+
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
+{
+
+    var config = builder.Configuration.GetSection("JWT");
+
+    options.Events = new JwtBearerEvents
+    {
+
+        OnMessageReceived = context =>
+        {
+            context.Token = context.Request.Cookies["session-id"];
+            return Task.CompletedTask;
+        }
+
+    };
+
+
+    options.RequireHttpsMetadata = true;
+    options.IncludeErrorDetails = true;
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = false,
+        ValidateAudience = false,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ValidIssuer = config["JWT:Issuer"],
+        ValidAudience = config["JWT:Audience"],
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["JWT:SecretKey"])),
+        ClockSkew = TimeSpan.Zero
+    };
+
+
+});
+builder.Services.AddAuthorization(options =>
+{
+    options.FallbackPolicy = new AuthorizationPolicyBuilder()
+        .RequireAuthenticatedUser()
+        .Build();
+});
+
+
+
+
+
+
+
+
+
+
+
+
 
 var servicesAssembly = Assembly.Load("Servicios");
 
@@ -45,6 +121,13 @@ foreach (var interfaceService in serviceInterfaces){
     if(servicioImplementacion != null)
         builder.Services.AddScoped(interfaceService, servicioImplementacion);
 }
+
+
+
+
+
+
+
 
 
 

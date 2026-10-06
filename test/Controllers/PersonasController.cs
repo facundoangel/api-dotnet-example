@@ -44,8 +44,6 @@ namespace test.Controllers
         public async Task<IActionResult>  GetPersonas(int nro_pagina, int limite_pagina)
         {
 
-
-
             var response = await _personaService.getPersona(nro_pagina, limite_pagina);
 
             return Ok(response);
@@ -61,17 +59,9 @@ namespace test.Controllers
         )]
         [SwaggerResponse(StatusCodes.Status200OK, "Devuelve una lista con el historial academico de la persona, separado por carrera", typeof(PersonaDTO))]
         [SwaggerResponse(StatusCodes.Status500InternalServerError, "Error interno al procesamiento de la petición", typeof(ErrorOperacion))]
-        public async Task<ActionResult<MdpPersona>> FindPersona(string nro_documento)
+        public async Task<IActionResult> FindPersona(string nro_documento)
         {
-            var response = await _contextIntra.Set<MdpPersona>().Where(x => x.NroDocumento == nro_documento).FirstAsync();
-
-            if (response == null)
-                return NotFound(new ErrorOperacion
-                {
-                    StatusCode=404,
-                    Message="Alumno no encontrado",
-                    
-                });
+            var response = await _personaService.FindPersona(nro_documento);
 
             return Ok(response);
         }
@@ -87,40 +77,11 @@ namespace test.Controllers
         )]
         [SwaggerResponse(StatusCodes.Status200OK, "Devuelve un string", typeof(CusPersona))]
         [SwaggerResponse(StatusCodes.Status500InternalServerError, "Error interno al procesamiento de la petición", typeof(ErrorOperacion))]
-        public async Task<ActionResult<string>> migracionPersona(PersonaMigracionDTO persona)
+        public async Task<IActionResult> migracionPersona(PersonaMigracionDTO persona)
         {
-            MdpPersona responseQuery = await _contextIntra.Set<MdpPersona>().Where(x => x.NroDocumento == persona.dni).FirstAsync();
+            var response = await _personaService.migracionPersona(persona);
 
-            CusPersona nuevaPersonaAMigrar = new CusPersona
-            {
-                Persona          = responseQuery.Persona,
-                TipoDocumento    = responseQuery.TipoDocumento,
-                NroDocumento     = responseQuery.NroDocumento,
-                Apellido         = responseQuery.Apellido,
-                Nombres          = responseQuery.Nombres,
-                Sexo             = responseQuery.Sexo,
-                FechaNacimiento  = responseQuery.FechaNacimiento,
-                Token            = responseQuery.Token,
-                EmailValido      = responseQuery.EmailValido,
-                IdentidadGenero  = responseQuery.IdentidadGenero,
-                MailInstitucional = responseQuery.MailInstitucional,
-                Domicilio        = responseQuery.Domicilio,
-                Provincia        = responseQuery.Provincia,
-                Nacionalidad     = responseQuery.Nacionalidad,
-                EstadoCivil      = responseQuery.EstadoCivil,
-                Telefono         = responseQuery.Telefono,
-                MailPersonal     = responseQuery.MailPersonal,
-                Localidad        = responseQuery.Localidad,
-                NormalizedUserName = responseQuery.NormalizedUserName,
-                PasswordHash     = responseQuery.PasswordHash,
-                SecurityStamp    = responseQuery.SecurityStamp,
-                ConcurrencyStamp = responseQuery.ConcurrencyStamp,
-                AccessFailedCount = responseQuery.AccessFailedCount,
-            };
-            var responseMigration = await _contextCustomDB.Set<CusPersona>().AddAsync(nuevaPersonaAMigrar);
-            _contextCustomDB.SaveChanges();
-
-            return Ok(responseMigration);
+            return Ok(response);
         }
 
 
