@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Microsoft.FeatureManagement.Mvc;
 using test.auth;
@@ -13,7 +14,7 @@ namespace test.Controllers
 
         private readonly JWTConfiguracion jwtConfiguracion = jwtOptions.Value;
 
-
+        [AllowAnonymous]
         [HttpGet("login")]
         public IActionResult login()
         {

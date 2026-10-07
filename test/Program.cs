@@ -72,15 +72,17 @@ builder.Services.AddAuthentication(options =>
 
     options.RequireHttpsMetadata = true;
     options.IncludeErrorDetails = true;
+
+    var secretKey = config["SecretKey"] ?? " ";
     options.TokenValidationParameters = new TokenValidationParameters
     {
         ValidateIssuer = false,
         ValidateAudience = false,
         ValidateLifetime = true,
         ValidateIssuerSigningKey = true,
-        ValidIssuer = config["JWT:Issuer"],
-        ValidAudience = config["JWT:Audience"],
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["JWT:SecretKey"])),
+        ValidIssuer = config["Issuer"],
+        ValidAudience = config["Audience"],
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey)),
         ClockSkew = TimeSpan.Zero
     };
 
