@@ -1,9 +1,11 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.FeatureManagement;
 using Microsoft.IdentityModel.Tokens;
+using Modelo;
 using Persistencia.Data;
 using Servicios;
 using Servicios.interfaces;
@@ -27,6 +29,16 @@ builder.Services.AddFeatureManagement();
 
 
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("CorsPolicy",
+        builder => builder
+        .WithOrigins("http://localhost:5173", "http://localhost:5281", "https://localhost:7019")
+        .AllowAnyMethod()
+        .AllowAnyHeader()
+        .AllowCredentials()
+        .WithExposedHeaders("Content-Disposition"));
+});
 
 
 
@@ -48,6 +60,23 @@ builder.Services.AddSwaggerGen(options =>
 
 
 
+builder.Services.AddIdentity<CusPersona, IdentityRole<int>>(options =>
+{
+    options.Password.RequireDigit = false;
+    options.Password.RequireLowercase = false;
+    options.Password.RequireUppercase = false;
+    options.Password.RequiredLength = 1;
+    options.Password.RequireNonAlphanumeric = false;
+    options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
+    options.User.RequireUniqueEmail = false;
+    options.SignIn.RequireConfirmedEmail = false;
+    options.SignIn.RequireConfirmedPhoneNumber = false;
+
+
+})
+    .AddEntityFrameworkStores<CustomDBContext>()
+    .AddDefaultTokenProviders()
+    .AddUserManager<ApplicationIdentityPersonaManager>();
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -70,7 +99,7 @@ builder.Services.AddAuthentication(options =>
     };
 
 
-    options.RequireHttpsMetadata = true;
+    options.RequireHttpsMetadata = false;
     options.IncludeErrorDetails = true;
 
     var secretKey = config["SecretKey"] ?? " ";
@@ -136,7 +165,7 @@ foreach (var interfaceService in serviceInterfaces){
 builder.Services.AddDbContext<BaseIntraLocalMatiContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("Default")));
 
-builder.Services.AddDbContext<customDBContext>(options =>
+builder.Services.AddDbContext<CustomDBContext>(options =>
 {
     options.UseNpgsql(builder.Configuration.GetConnectionString("customDB"), o =>
     {
@@ -144,7 +173,19 @@ builder.Services.AddDbContext<customDBContext>(options =>
     });
 });
 
-builder.Services.AddScoped<IPersonaService, PersonasService>();
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -158,8 +199,12 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+if (!app.Environment.IsDevelopment())
+    app.UseHttpsRedirection();
 
+app.UseCors("CorsPolicy");
+
+app.UseAuthentication();
 app.UseAuthorization();
 app.UseMiddleware<ExceptionHandlerMiddleware>();
 app.MapControllers();

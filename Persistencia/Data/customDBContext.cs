@@ -1,3 +1,6 @@
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+
 using Microsoft.EntityFrameworkCore;
 using Modelo;
 
@@ -5,16 +8,18 @@ namespace Persistencia.Data
 {
 
 
-    public class customDBContext : DbContext
+    public class CustomDBContext : IdentityDbContext<CusPersona, IdentityRole<int>, int>
     {
 
-        public customDBContext(DbContextOptions<customDBContext> options) : base(options) { }
+        public CustomDBContext(DbContextOptions<CustomDBContext> options) : base(options) { }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            base.OnModelCreating(modelBuilder);
-            modelBuilder.Entity<CusPersona>()
-                .ToTable("cus_persona", schema: "negocio");
+            base.OnModelCreating(modelBuilder);           
+            modelBuilder.Entity<CusPersona>(entity => {
+                entity.ToTable("cus_persona", schema: "negocio");
+                entity.Property(e => e.Id).HasColumnName("persona");
+            });
         }
 
         public DbSet<CusPersona> Personas { get; set; }

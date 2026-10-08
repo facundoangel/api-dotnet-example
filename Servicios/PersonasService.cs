@@ -13,9 +13,9 @@ namespace Servicios
 
 
         private readonly BaseIntraLocalMatiContext _contextIntra;
-        private readonly customDBContext _contextCustomDB;
+        private readonly CustomDBContext _contextCustomDB;
 
-        public PersonasService(BaseIntraLocalMatiContext contextIntra, customDBContext contextCustomDB) {
+        public PersonasService(BaseIntraLocalMatiContext contextIntra, CustomDBContext contextCustomDB) {
             _contextIntra = contextIntra;
             _contextCustomDB = contextCustomDB;
         }
@@ -84,29 +84,25 @@ namespace Servicios
 
             CusPersona nuevaPersonaAMigrar = new CusPersona
             {
-                Persona = responseQuery.Persona,
-                TipoDocumento = responseQuery.TipoDocumento,
-                NroDocumento = responseQuery.NroDocumento,
-                Apellido = responseQuery.Apellido,
-                Nombres = responseQuery.Nombres,
-                Sexo = responseQuery.Sexo,
-                FechaNacimiento = responseQuery.FechaNacimiento,
-                Token = responseQuery.Token,
-                EmailValido = responseQuery.EmailValido,
-                IdentidadGenero = responseQuery.IdentidadGenero,
-                MailInstitucional = responseQuery.MailInstitucional,
-                Domicilio = responseQuery.Domicilio,
-                Provincia = responseQuery.Provincia,
-                Nacionalidad = responseQuery.Nacionalidad,
-                EstadoCivil = responseQuery.EstadoCivil,
-                Telefono = responseQuery.Telefono,
-                MailPersonal = responseQuery.MailPersonal,
-                Localidad = responseQuery.Localidad,
-                NormalizedUserName = responseQuery.NormalizedUserName,
-                PasswordHash = responseQuery.PasswordHash,
-                SecurityStamp = responseQuery.SecurityStamp,
-                ConcurrencyStamp = responseQuery.ConcurrencyStamp,
-                AccessFailedCount = responseQuery.AccessFailedCount,
+                persona = responseQuery.Persona,
+                tipo_documento = responseQuery.TipoDocumento,
+                nro_documento = responseQuery.NroDocumento,
+                apellido = responseQuery.Apellido,
+                nombres = responseQuery.Nombres,
+                sexo = responseQuery.Sexo,
+                fecha_nacimiento = responseQuery.FechaNacimiento,
+                token = responseQuery.Token,
+                email_valido = responseQuery.EmailValido,
+                identidad_genero = responseQuery.IdentidadGenero,
+                mail_institucional = responseQuery.MailInstitucional,
+                domicilio = responseQuery.Domicilio,
+                provincia = responseQuery.Provincia,
+                nacionalidad = responseQuery.Nacionalidad,
+                estado_civil = responseQuery.EstadoCivil,
+                telefono = responseQuery.Telefono,
+                mail_personal = responseQuery.MailPersonal,
+                localidad = responseQuery.Localidad,
+
             };
             var responseMigration = await _contextCustomDB.Set<CusPersona>().AddAsync(nuevaPersonaAMigrar);
             var affectedRows = await _contextCustomDB.SaveChangesAsync();

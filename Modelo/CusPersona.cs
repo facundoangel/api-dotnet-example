@@ -1,57 +1,47 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Identity;
 using test;
 
 namespace Modelo
 {
 
-    public class CusPersona
+    public class CusPersona : IdentityUser<int>
     {
-        [Key]
-        public int Persona { get; set; }
 
-        public short TipoDocumento { get; set; }
+        public int persona { get; set; }
 
-        public string NroDocumento { get; set; } = null!;
+        public short tipo_documento { get; set; }
 
-        public string Apellido { get; set; } = null!;
+        public string nro_documento { get; set; } = null!;
 
-        public string Nombres { get; set; } = null!;
+        public string apellido { get; set; } = null!;
 
-        public char Sexo { get; set; }
+        public string nombres { get; set; } = null!;
 
-        public DateOnly? FechaNacimiento { get; set; }
+        public char sexo { get; set; }
 
-        public string? Token { get; set; }
+        public DateOnly? fecha_nacimiento { get; set; }
 
-        public short EmailValido { get; set; }
+        public string? token { get; set; }
 
-        public int? IdentidadGenero { get; set; }
+        public short email_valido { get; set; }
 
-        public string? MailInstitucional { get; set; }
+        public int? identidad_genero { get; set; }
 
-        public string? Domicilio { get; set; }
+        public string? mail_institucional { get; set; }
 
-        public string? Provincia { get; set; }
+        public string? domicilio { get; set; }
 
-        public string? Nacionalidad { get; set; }
+        public string? provincia { get; set; }
 
-        public string? EstadoCivil { get; set; }
+        public string? nacionalidad { get; set; }
 
-        public string? Telefono { get; set; }
+        public string? estado_civil { get; set; }
 
-        public string? MailPersonal { get; set; }
+        public string? telefono { get; set; }
 
-        public string? Localidad { get; set; }
+        public string? mail_personal { get; set; }
 
-        public string? NormalizedUserName { get; set; }
-
-        public string? PasswordHash { get; set; }
-
-        public string? SecurityStamp { get; set; }
-
-        public string? ConcurrencyStamp { get; set; }
-
-        public int AccessFailedCount { get; set; }
+        public string? localidad { get; set; }
 
         /*public virtual ICollection<SaiSancione> SaiSanciones { get; set; } = new List<SaiSancione>();
 
@@ -64,29 +54,24 @@ namespace Modelo
 
         public static explicit operator CusPersona(MdpPersona p) => new CusPersona
         {
-            Persona = p.Persona,
-            TipoDocumento = p.TipoDocumento,
-            NroDocumento = p.NroDocumento,
-            Apellido = p.Apellido,
-            Nombres = p.Nombres,
-            Sexo = p.Sexo,
-            FechaNacimiento = p.FechaNacimiento,
-            Token = p.Token,
-            EmailValido = p.EmailValido,
-            IdentidadGenero = p.IdentidadGenero,
-            MailInstitucional = p.MailInstitucional,
-            Domicilio = p.Domicilio,
-            Provincia = p.Provincia,
-            Nacionalidad = p.Nacionalidad,
-            EstadoCivil = p.EstadoCivil,
-            Telefono = p.Telefono,
-            MailPersonal = p.MailPersonal,
-            Localidad = p.Localidad,
-            NormalizedUserName = p.NormalizedUserName,
-            PasswordHash = p.PasswordHash,
-            SecurityStamp = p.SecurityStamp,
-            ConcurrencyStamp = p.ConcurrencyStamp,
-            AccessFailedCount = p.AccessFailedCount,
+            persona = p.Persona,
+            tipo_documento = p.TipoDocumento,
+            nro_documento = p.NroDocumento,
+            apellido = p.Apellido,
+            nombres = p.Nombres,
+            sexo = p.Sexo,
+            fecha_nacimiento = p.FechaNacimiento,
+            token = p.Token,
+            email_valido = p.EmailValido,
+            identidad_genero = p.IdentidadGenero,
+            mail_institucional = p.MailInstitucional,
+            domicilio = p.Domicilio,
+            provincia = p.Provincia,
+            nacionalidad = p.Nacionalidad,
+            estado_civil = p.EstadoCivil,
+            telefono = p.Telefono,
+            mail_personal = p.MailPersonal,
+            localidad = p.Localidad,
             /*SaiSanciones = p.SaiSanciones,
             SaiSolicitudTramites = p.SaiSolicitudTramites,
             SgaAlumnos = p.SgaAlumnos,

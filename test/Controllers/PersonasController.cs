@@ -20,10 +20,10 @@ namespace test.Controllers
     {
 
         private readonly BaseIntraLocalMatiContext _contextIntra;
-        private readonly customDBContext _contextCustomDB;
+        private readonly CustomDBContext _contextCustomDB;
         private readonly IPersonaService _personaService;
 
-        public PersonasController(BaseIntraLocalMatiContext contextIntra, customDBContext contextCustomDB, IPersonaService personaService) {
+        public PersonasController(BaseIntraLocalMatiContext contextIntra, CustomDBContext contextCustomDB, IPersonaService personaService) {
             _contextIntra = contextIntra;
             _contextCustomDB = contextCustomDB;
             _personaService = personaService;
